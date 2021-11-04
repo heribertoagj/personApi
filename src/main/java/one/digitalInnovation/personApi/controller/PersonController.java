@@ -28,7 +28,6 @@ public class PersonController {
         return this.personService.createPerson(personDTO);
     }
 
-
     @GetMapping
     public List<PersonDTO> listAll(){
         return personService.listAll();
@@ -37,5 +36,16 @@ public class PersonController {
     @GetMapping("/{id}")
     public PersonDTO findById(@PathVariable  Long id) throws PersonNotFoundException {
         return personService.findById(id);
+    }
+
+    @DeleteMapping ("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) throws PersonNotFoundException {
+        personService.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public MessageResponseDTO updateById(@PathVariable Long id, @RequestBody @Valid PersonDTO personDTO) throws PersonNotFoundException {
+        return personService.updateById(id, personDTO);
     }
 }
