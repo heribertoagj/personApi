@@ -1,14 +1,17 @@
 package one.digitalInnovation.personApi.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import one.digitalInnovation.personApi.dto.MessageResponseDTO;
 import one.digitalInnovation.personApi.dto.request.PersonDTO;
 import one.digitalInnovation.personApi.entity.Person;
+import one.digitalInnovation.personApi.exception.PersonNotFoundException;
 import one.digitalInnovation.personApi.mapper.PersonMapper;
 import one.digitalInnovation.personApi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -31,5 +34,19 @@ public class PersonService {
                 .build();
     }
 
+    public List<PersonDTO> listAll(){
+        List <Person> allPerson = personRepository.findAll();
+        return allPerson.stream()
+                .map(personMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
+    public PersonDTO findById(Long id) throws PersonNotFoundException {
+        Person person = verifyIfExists(id);
+        return personMapper.toDTO(person);
+    }
+    public Person verifyIfExists(Long id) throws PersonNotFoundException {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
+    }
 }
